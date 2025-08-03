@@ -47,7 +47,9 @@ The application uses three main tables:
 - `POST /api/initialize-parks` - Seeds database with initial park data
 
 ### Data Management
-- Park data is seeded from hardcoded Australian national parks information
+- Significantly expanded park dataset representing major parks from Australia's 600+ national parks system
+- Comprehensive coverage across all states and territories with authentic park information
+- Queensland leads with 8 major parks (from 237+ total), NSW with 11 major parks (from 200+ total)
 - Vote history is maintained for analytics and rating recalculation
 - Real-time updates to rankings after each vote
 - Statistics tracking including daily vote counts and most contested parks
