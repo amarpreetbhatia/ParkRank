@@ -50,7 +50,7 @@ export function initializeParksData(): InsertPark[] {
       coordinates: "33°58′04″S150°18′15″E",
       establishedDate: "1959",
       description: "World Heritage area famous for dramatic cliffs, eucalyptus forests, and the Three Sisters.",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=240&q=80"
+      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/3/35/Australia_-_Part_3_%2827446932621%29.jpg/330px-Australia_-_Part_3_%2827446932621%29.jpg"
     },
     {
       id: "boonoo-boonoo-national-park",
@@ -122,7 +122,7 @@ export function initializeParksData(): InsertPark[] {
       coordinates: "34°04′S151°03′E",
       establishedDate: "1879",
       description: "World's second oldest national park featuring coastal cliffs, beaches, and heathland.",
-      imageUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=240&q=80"
+      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/4/44/Late_Afternoon_at_North_%26_South_Era.jpg/330px-Late_Afternoon_at_North_%26_South_Era.jpg"
     },
     
     // Northern Territory (17 parks total - significant selection)
@@ -133,7 +133,7 @@ export function initializeParksData(): InsertPark[] {
       coordinates: "12°20′S132°50′E", 
       establishedDate: "1981",
       description: "Australia's largest national park featuring ancient Aboriginal rock art and diverse ecosystems.",
-      imageUrl: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=240&q=80"
+      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/93/Kakadu_2431.jpg/330px-Kakadu_2431.jpg"
     },
     {
       id: "uluru-kata-tjuta-national-park",
@@ -142,7 +142,7 @@ export function initializeParksData(): InsertPark[] {
       coordinates: "25°20′S131°02′E",
       establishedDate: "1958",
       description: "UNESCO World Heritage site home to iconic Uluru and Kata Tjuta, sacred to Anangu people.",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=240&q=80"
+      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0d/UluruClip3ArtC1941.jpg/330px-UluruClip3ArtC1941.jpg"
     },
     {
       id: "litchfield-national-park",
@@ -171,7 +171,7 @@ export function initializeParksData(): InsertPark[] {
       coordinates: "16°10′S145°25′E",
       establishedDate: "1988",
       description: "World Heritage rainforest dating back 180 million years, the world's oldest surviving rainforest.",
-      imageUrl: "https://images.unsplash.com/photo-1583212292454-1fe6229603b7?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=240&q=80"
+      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/9/96/Daintree_National_Park.jpg/330px-Daintree_National_Park.jpg"
     },
     {
       id: "great-barrier-reef-marine-park",
@@ -283,7 +283,7 @@ export function initializeParksData(): InsertPark[] {
       coordinates: "41°40′S146°07′E", 
       establishedDate: "1922",
       description: "World Heritage wilderness featuring ancient rainforests, alpine landscapes, and diverse wildlife.",
-      imageUrl: "https://images.unsplash.com/photo-1544947950-fa07a98d237f?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=240&q=80"
+      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/8/88/Cradle_Mountain_Behind_Dove_Lake.jpg/330px-Cradle_Mountain_Behind_Dove_Lake.jpg"
     },
     {
       id: "freycinet-national-park",
@@ -339,7 +339,7 @@ export function initializeParksData(): InsertPark[] {
       coordinates: "37°15′S142°30′E",
       establishedDate: "1984",
       description: "Rugged mountain ranges with Aboriginal rock art, waterfalls, and spectacular wildflower displays.",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=240&q=80"
+      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/c/ce/Grampians.jpg/330px-Grampians.jpg"
     },
     {
       id: "wilsons-promontory-national-park",
@@ -386,7 +386,7 @@ export function initializeParksData(): InsertPark[] {
       coordinates: "22°25′S118°29′E",
       establishedDate: "1969",
       description: "Ancient red rock gorges, waterfalls, and diverse ecosystems in the Pilbara region.",
-      imageUrl: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&h=240&q=80"
+      imageUrl: "https://upload.wikimedia.org/wikipedia/commons/thumb/6/60/Dales_Gorge%2C_WA.jpg/330px-Dales_Gorge%2C_WA.jpg"
     },
     {
       id: "purnululu-national-park",
