@@ -39,13 +39,15 @@ export default function Dashboard() {
   // Fetch rankings
   const { data: rankingsData, isLoading: rankingsLoading } = useQuery<RankingsResponse>({
     queryKey: ["/api/rankings"],
-    refetchInterval: 30000,
+    refetchInterval: 5000, // Real-time updates every 5 seconds
+    refetchOnWindowFocus: true,
   });
 
   // Fetch statistics
   const { data: statisticsData, isLoading: statisticsLoading } = useQuery<StatisticsResponse>({
     queryKey: ["/api/statistics"],
-    refetchInterval: 30000,
+    refetchInterval: 5000, // Real-time updates every 5 seconds
+    refetchOnWindowFocus: true,
   });
 
   const filteredRankings = rankingsData?.rankings.filter(park => 

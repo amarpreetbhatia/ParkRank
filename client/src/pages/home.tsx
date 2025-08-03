@@ -61,19 +61,22 @@ export default function Home() {
   // Fetch rankings
   const { data: rankingsData, isLoading: rankingsLoading } = useQuery<RankingsResponse>({
     queryKey: ["/api/rankings"],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 5000, // Refresh every 5 seconds for real-time feel
+    refetchOnWindowFocus: true, // Refetch when user comes back to page
   });
 
   // Fetch recent votes
   const { data: votesData, isLoading: votesLoading } = useQuery<VotesResponse>({
     queryKey: ["/api/recent-votes"],
-    refetchInterval: 10000, // Refresh every 10 seconds
+    refetchInterval: 3000, // Refresh every 3 seconds for real-time updates
+    refetchOnWindowFocus: true,
   });
 
   // Fetch statistics
   const { data: statisticsData, isLoading: statisticsLoading } = useQuery<StatisticsResponse>({
     queryKey: ["/api/statistics"],
-    refetchInterval: 30000, // Refresh every 30 seconds
+    refetchInterval: 5000, // Refresh every 5 seconds
+    refetchOnWindowFocus: true,
   });
 
   // Vote mutation
@@ -82,10 +85,15 @@ export default function Home() {
       const response = await apiRequest("POST", "/api/vote", { winnerId, loserId });
       return response.json();
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["/api/rankings"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/recent-votes"] });
-      queryClient.invalidateQueries({ queryKey: ["/api/statistics"] });
+    onSuccess: async () => {
+      // Immediately refetch all dependent queries to ensure real-time updates
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["/api/rankings"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/recent-votes"] }),
+        queryClient.invalidateQueries({ queryKey: ["/api/statistics"] }),
+      ]);
+      
+      // Force refetch matchup for next voting round
       refetchMatchup();
       
       toast({
