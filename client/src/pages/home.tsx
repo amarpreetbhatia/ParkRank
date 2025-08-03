@@ -10,6 +10,7 @@ import { RankingsTable } from "@/components/rankings-table";
 import { RecentVotes } from "@/components/recent-votes";
 import { Statistics } from "@/components/statistics";
 import { Mountain, ArrowRight } from "lucide-react";
+import { Link } from "wouter";
 import { apiRequest } from "@/lib/queryClient";
 import type { Park, Vote } from "@shared/schema";
 
@@ -124,9 +125,8 @@ export default function Home() {
               <h1 className="text-2xl font-bold text-gray-900">nps rank</h1>
             </div>
             <nav className="hidden md:flex items-center space-x-6">
-              <a href="#" className="text-gray-600 hover:text-blue-600 font-medium">Vote</a>
-              <a href="#" className="text-gray-600 hover:text-blue-600 font-medium">Rankings</a>
-              <a href="#" className="text-gray-600 hover:text-blue-600 font-medium">Statistics</a>
+              <Link href="/" className="text-blue-600 font-medium">Vote</Link>
+              <Link href="/dashboard" className="text-gray-600 hover:text-blue-600 font-medium">Dashboard</Link>
             </nav>
           </div>
         </div>
