@@ -28,23 +28,192 @@ Preferred communication style: Simple, everyday language.
 - **Logging**: Custom request/response logging middleware
 
 ### Database Schema
-The application uses three main tables:
-- **Parks**: Stores national park information including name, state, coordinates, establishment date, description, ELO rating, vote statistics, and image URLs
-- **Votes**: Records each voting event with winner/loser IDs, previous ratings, new ratings, and rating changes
-- **Users**: User account information with relationships to votes (schema defined but not fully implemented)
+
+The application uses a PostgreSQL database with three main entities designed for the ELO rating voting system:
+
+```mermaid
+erDiagram
+    PARKS {
+        string id PK "Unique identifier (kebab-case)"
+        string name "Park display name"
+        string state "Australian state/territory"
+        string coordinates "GPS coordinates"
+        string establishedDate "Year established"
+        text description "Park description"
+        string imageUrl "High-quality park image URL"
+        integer eloRating "Current ELO rating (default: 1500)"
+        integer totalVotes "Total votes involving this park"
+        integer wins "Number of wins"
+        integer losses "Number of losses"
+        timestamp createdAt "Record creation time"
+        timestamp updatedAt "Last update time"
+    }
+    
+    VOTES {
+        string id PK "UUID vote identifier"
+        string winnerId FK "Reference to winning park"
+        string loserId FK "Reference to losing park"
+        integer winnerPreviousRating "Winner's rating before vote"
+        integer loserPreviousRating "Loser's rating before vote"
+        integer winnerNewRating "Winner's rating after vote"
+        integer loserNewRating "Loser's rating after vote"
+        integer winnerRatingChange "Rating points gained by winner"
+        integer loserRatingChange "Rating points lost by loser"
+        timestamp createdAt "Vote timestamp"
+    }
+    
+    USERS {
+        integer id PK "Auto-increment user ID"
+        string username "Unique username"
+        string passwordHash "Hashed password"
+        timestamp createdAt "Account creation time"
+        timestamp updatedAt "Last profile update"
+    }
+    
+    PARKS ||--o{ VOTES : "wins/losses"
+    PARKS ||--o{ VOTES : "participates_in"
+    USERS ||--o{ VOTES : "casts (future feature)"
+```
+
+#### Schema Details
+
+**Parks Table**
+- Primary entity storing all Australian national park information
+- ELO rating system with 1500 starting rating for all parks
+- Comprehensive metadata including establishment dates and coordinates
+- Vote statistics tracking for analytics and leaderboards
+
+**Votes Table** 
+- Records complete voting history with before/after ratings
+- Enables ELO calculation verification and historical analysis
+- Stores rating changes for statistics and trending analysis
+- Foreign key relationships to parks for winner/loser tracking
+
+**Users Table**
+- Authentication system (currently not fully implemented)
+- Designed for future features like user profiles and voting history
+- Prepared for user-specific analytics and preferences
+
+#### Relationships
+- Each vote references exactly two parks (winner and loser)
+- Parks can participate in unlimited votes over time
+- Rating changes are calculated using standard ELO algorithm (K-factor: 32)
+- All historical data preserved for analysis and rating recalculation
 
 ### ELO Rating System
-- Each park starts with a baseline rating of 1500 points
-- Rating changes are calculated using standard ELO algorithm with K-factor of 32
-- Winners gain points while losers lose points based on relative skill difference
-- Rating changes are stored for historical tracking and analysis
+
+The application implements a chess-style ELO rating system for ranking national parks based on head-to-head vote outcomes:
+
+```mermaid
+flowchart LR
+    A[Park A: 1500] --> C{Vote Outcome}
+    B[Park B: 1500] --> C
+    
+    C -->|A Wins| D[Calculate Rating Change]
+    C -->|B Wins| E[Calculate Rating Change]
+    
+    D --> F[A: 1516 ↑+16<br/>B: 1484 ↓-16]
+    E --> G[A: 1484 ↓-16<br/>B: 1516 ↑+16]
+    
+    F --> H[Update Database]
+    G --> H
+    H --> I[Record Vote History]
+    
+    style C fill:#e3f2fd
+    style F fill:#e8f5e8
+    style G fill:#ffebee
+```
+
+**Algorithm Details:**
+- **Starting Rating**: All parks begin with 1500 points (industry standard)
+- **K-Factor**: 32 (determines rating volatility - higher = more dramatic changes)
+- **Expected Score Formula**: `E = 1 / (1 + 10^((RatingB - RatingA) / 400))`
+- **New Rating Formula**: `NewRating = OldRating + K * (ActualScore - ExpectedScore)`
+
+**Rating Dynamics:**
+- Underdog victories result in larger rating swings
+- Closely matched parks see smaller rating changes  
+- System naturally converges toward accurate rankings over time
+- All rating changes are symmetric (winner gains = loser loses)
+
+**Implementation Benefits:**
+- Self-balancing system requires minimal manual adjustment
+- Handles new parks entering the system gracefully
+- Historical vote data enables rating recalculation if needed
+- Provides intuitive ranking that reflects community preferences
 
 ### API Endpoints
+
+```mermaid
+flowchart TD
+    A[Client Request] --> B{Endpoint Type}
+    
+    B -->|GET /api/matchup| C[Select Random Parks]
+    C --> D[Return Two Parks for Voting]
+    
+    B -->|POST /api/vote| E[Receive Vote Data]
+    E --> F[Calculate ELO Changes]
+    F --> G[Update Park Ratings]
+    G --> H[Record Vote History]
+    H --> I[Return Updated Ratings]
+    
+    B -->|GET /api/rankings| J[Query Parks by ELO Rating]
+    J --> K[Return Sorted Park List]
+    
+    B -->|GET /api/statistics| L[Aggregate Vote Data]
+    L --> M[Calculate Statistics]
+    M --> N[Return Metrics]
+    
+    B -->|POST /api/initialize-parks| O[Check Existing Data]
+    O --> P[Insert Park Data]
+    P --> Q[Return Success Message]
+    
+    style F fill:#e1f5fe
+    style G fill:#e8f5e8
+    style H fill:#fff3e0
+```
+
+**Core API Endpoints:**
 - `GET /api/matchup` - Returns two random parks for head-to-head comparison
-- `POST /api/vote` - Submits a vote and updates ELO ratings
-- `GET /api/rankings` - Returns parks sorted by ELO rating
-- `GET /api/statistics` - Returns voting statistics and metrics
-- `POST /api/initialize-parks` - Seeds database with initial park data
+- `POST /api/vote` - Submits a vote and updates ELO ratings with full history tracking
+- `GET /api/rankings` - Returns parks sorted by ELO rating (supports state filtering)
+- `GET /api/statistics` - Returns comprehensive voting statistics and metrics
+- `POST /api/initialize-parks` - Seeds database with initial park data (idempotent)
+
+**API Response Examples:**
+```typescript
+// GET /api/matchup
+{
+  parks: [
+    { id: "kakadu-national-park", name: "Kakadu National Park", ... },
+    { id: "uluru-kata-tjuta-national-park", name: "Uluru-Kata Tjuta National Park", ... }
+  ]
+}
+
+// POST /api/vote (body: { winnerId, loserId })
+{
+  message: "Vote recorded successfully",
+  ratingChanges: {
+    winner: { previous: 1520, new: 1536, change: +16 },
+    loser: { previous: 1480, new: 1464, change: -16 }
+  }
+}
+
+// GET /api/rankings
+{
+  rankings: [
+    { id: "...", name: "...", eloRating: 1650, wins: 23, losses: 8, ... }
+  ]
+}
+
+// GET /api/statistics  
+{
+  totalVotes: "1247",
+  todayVotes: "23", 
+  totalParks: "41",
+  mostContested: "Blue Mountains National Park"
+}
+```
 
 ### Data Management
 - Significantly expanded park dataset representing major parks from Australia's 600+ national parks system
