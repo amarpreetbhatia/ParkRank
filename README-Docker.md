@@ -7,24 +7,53 @@ Deploy the Australian National Parks Voting application on any VM or cloud platf
 ### Prerequisites
 - Docker (version 20.10+)
 - Docker Compose (version 2.0+)
+- Git (for cloning the repository)
 
 ### Development Deployment
 
-1. **Clone and Build**
+1. **Clone and Prepare**
    ```bash
    git clone <repository-url>
    cd australian-parks-voting
-   ./docker-scripts.sh build
+   chmod +x docker-scripts.sh
    ```
 
-2. **Start Development Environment**
+2. **Build the Application**
    ```bash
-   ./docker-scripts.sh run
+   # Option 1: Using the helper script
+   ./docker-scripts.sh build
+   
+   # Option 2: Using Docker directly
+   docker build -t nps-rank-app .
    ```
 
-3. **Access Application**
+3. **Start Development Environment**
+   ```bash
+   # Option 1: Using the helper script
+   ./docker-scripts.sh run
+   
+   # Option 2: Using Docker Compose directly
+   docker-compose up -d
+   ```
+
+4. **Access Application**
    - Application: http://localhost:5000
    - Database: localhost:5432 (postgres/postgres)
+   - Health Check: http://localhost:5000/api/statistics
+
+### Troubleshooting Build Issues
+
+If you encounter the error "Cannot find package 'vite'", this indicates a build configuration issue. The application has been fixed to properly separate development and production dependencies. Ensure you're using the latest Dockerfile.
+
+**Build Verification:**
+```bash
+# Test build locally first
+npm run build
+ls -la dist/  # Should show built files
+
+# Then build Docker image
+docker build -t nps-rank-app .
+```
 
 ### Production Deployment
 

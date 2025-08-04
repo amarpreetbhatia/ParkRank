@@ -1,10 +1,48 @@
 import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
-import { setupVite, serveStatic, log } from "./vite";
+import path from "path";
+
+// Development or production mode helper functions
+async function initializeViteHelpers() {
+  if (process.env.NODE_ENV === "development") {
+    const viteModule = await import("./vite");
+    return {
+      setupVite: viteModule.setupVite,
+      serveStatic: viteModule.serveStatic,
+      log: viteModule.log,
+    };
+  } else {
+    // Production implementations
+    return {
+      setupVite: null,
+      serveStatic: (app: express.Application) => {
+        app.use(express.static(path.resolve("dist")));
+        
+        // Serve index.html for all non-API routes (SPA routing)
+        app.get("*", (req, res, next) => {
+          if (req.path.startsWith("/api")) {
+            return next();
+          }
+          res.sendFile(path.resolve("dist/index.html"));
+        });
+      },
+      log: (message: string) => {
+        const timestamp = new Date().toLocaleTimeString();
+        console.log(`${timestamp} [express] ${message}`);
+      },
+    };
+  }
+}
 
 const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+
+// Temporary logging function that will be replaced
+let logFunction = (message: string) => {
+  const timestamp = new Date().toLocaleTimeString();
+  console.log(`${timestamp} [express] ${message}`);
+};
 
 app.use((req, res, next) => {
   const start = Date.now();
@@ -29,7 +67,7 @@ app.use((req, res, next) => {
         logLine = logLine.slice(0, 79) + "…";
       }
 
-      log(logLine);
+      logFunction(logLine);
     }
   });
 
@@ -37,6 +75,12 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  // Initialize helpers based on environment
+  const { setupVite, serveStatic, log } = await initializeViteHelpers();
+  
+  // Replace the temporary log function with the proper one
+  logFunction = log;
+  
   const server = await registerRoutes(app);
 
   app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
@@ -47,19 +91,14 @@ app.use((req, res, next) => {
     throw err;
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (app.get("env") === "development") {
+  // Setup Vite in development or serve static files in production
+  if (process.env.NODE_ENV === "development" && setupVite) {
     await setupVite(app, server);
   } else {
     serveStatic(app);
   }
 
-  // ALWAYS serve the app on the port specified in the environment variable PORT
-  // Other ports are firewalled. Default to 5000 if not specified.
-  // this serves both the API and the client.
-  // It is the only port that is not firewalled.
+  // Start the server
   const port = parseInt(process.env.PORT || '5000', 10);
   server.listen({
     port,

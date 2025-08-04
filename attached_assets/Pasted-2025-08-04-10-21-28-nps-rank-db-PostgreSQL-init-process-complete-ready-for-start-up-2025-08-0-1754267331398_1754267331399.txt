@@ -1,0 +1,30 @@
+2025-08-04 10:21:28 nps-rank-db   | PostgreSQL init process complete; ready for start up.
+2025-08-04 10:21:28 nps-rank-db   | 
+2025-08-04 10:21:28 nps-rank-db   | 2025-08-04 00:21:28.417 UTC [1] LOG:  starting PostgreSQL 15.13 on x86_64-pc-linux-musl, compiled by gcc (Alpine 14.2.0) 14.2.0, 64-bit
+2025-08-04 10:21:28 nps-rank-db   | 2025-08-04 00:21:28.418 UTC [1] LOG:  listening on IPv4 address "0.0.0.0", port 5432
+2025-08-04 10:21:28 nps-rank-db   | 2025-08-04 00:21:28.418 UTC [1] LOG:  listening on IPv6 address "::", port 5432
+2025-08-04 10:21:28 nps-rank-db   | 2025-08-04 00:21:28.424 UTC [1] LOG:  listening on Unix socket "/var/run/postgresql/.s.PGSQL.5432"
+2025-08-04 10:21:28 nps-rank-db   | 2025-08-04 00:21:28.433 UTC [60] LOG:  database system was shut down at 2025-08-04 00:21:28 UTC
+2025-08-04 10:21:28 nps-rank-db   | 2025-08-04 00:21:28.444 UTC [1] LOG:  database system is ready to accept connections
+2025-08-04 10:26:28 nps-rank-db   | 2025-08-04 00:26:28.943 UTC [58] LOG:  checkpoint starting: time
+2025-08-04 10:26:31 nps-rank-db   | 2025-08-04 00:26:31.086 UTC [58] LOG:  checkpoint complete: wrote 24 buffers (0.1%); 0 WAL file(s) added, 0 removed, 0 recycled; write=2.112 s, sync=0.012 s, total=2.144 s; sync files=10, longest=0.004 s, average=0.002 s; distance=65 kB, estimate=65 kB
+2025-08-04 10:27:33 nps-rank-app  | node:internal/errors:496
+2025-08-04 10:27:33 nps-rank-app  |     ErrorCaptureStackTrace(err);
+2025-08-04 10:27:33 nps-rank-app  |     ^
+2025-08-04 10:27:33 nps-rank-app  | 
+2025-08-04 10:27:33 nps-rank-app  | Error [ERR_MODULE_NOT_FOUND]: Cannot find package 'vite' imported from /app/dist/index.js
+2025-08-04 10:27:33 nps-rank-app  |     at new NodeError (node:internal/errors:405:5)
+2025-08-04 10:27:33 nps-rank-app  |     at packageResolve (node:internal/modules/esm/resolve:916:9)
+2025-08-04 10:27:33 nps-rank-app  |     at moduleResolve (node:internal/modules/esm/resolve:973:20)
+2025-08-04 10:27:33 nps-rank-app  |     at defaultResolve (node:internal/modules/esm/resolve:1206:11)
+2025-08-04 10:27:33 nps-rank-app  |     at ModuleLoader.defaultResolve (node:internal/modules/esm/loader:404:12)
+2025-08-04 10:27:33 nps-rank-app  |     at ModuleLoader.resolve (node:internal/modules/esm/loader:373:25)
+2025-08-04 10:27:33 nps-rank-app  |     at ModuleLoader.getModuleJob (node:internal/modules/esm/loader:250:38)
+2025-08-04 10:27:33 nps-rank-app  |     at ModuleWrap.<anonymous> (node:internal/modules/esm/module_job:76:39)
+2025-08-04 10:27:33 nps-rank-app  |     at link (node:internal/modules/esm/module_job:75:36) {
+2025-08-04 10:27:33 nps-rank-app  |   code: 'ERR_MODULE_NOT_FOUND'
+2025-08-04 10:27:33 nps-rank-app  | }
+2025-08-04 10:27:33 nps-rank-app  | 
+2025-08-04 10:27:33 nps-rank-app  | Node.js v18.20.8
+2036-01-01 00:00:00 
+nps-rank-app exited with code 1
