@@ -223,25 +223,103 @@ flowchart TD
 - Real-time updates to rankings after each vote
 - Statistics tracking including daily vote counts and most contested parks
 
-## External Dependencies
+## Deployment & Containerization
 
-### Database Services
-- **Neon Database**: Serverless PostgreSQL database hosting
+### Docker Support
+
+The application is fully containerized and can be deployed on any VM or cloud platform that supports Docker. Two deployment configurations are provided:
+
+#### Development Deployment
+```bash
+# Build and run development environment
+./docker-scripts.sh build
+./docker-scripts.sh run
+
+# Alternative using docker-compose directly
+docker-compose up -d
+```
+
+#### Production Deployment
+```bash
+# Configure environment variables
+cp .env.example .env
+# Edit .env with your production values
+
+# Deploy production environment
+./docker-scripts.sh prod
+
+# Alternative using docker-compose directly
+docker-compose -f docker-compose.prod.yml up -d
+```
+
+#### Docker Architecture
+- **Multi-stage Dockerfile**: Optimized for production with minimal image size
+- **PostgreSQL Container**: Dedicated database service with persistent volumes
+- **Nginx Reverse Proxy**: Optional load balancing and SSL termination
+- **Health Checks**: Built-in container health monitoring
+- **Security**: Non-root user, read-only filesystem, security headers
+
+#### Environment Variables
+```bash
+# Database Configuration
+DATABASE_URL=postgresql://user:password@host:5432/database
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=your_secure_password
+POSTGRES_DB=nps_rank
+
+# Application Configuration
+NODE_ENV=production
+PORT=5000
+HOST=0.0.0.0
+```
+
+#### Docker Commands
+```bash
+# Build image
+docker build -t nps-rank-app .
+
+# Run development stack
+docker-compose up -d
+
+# Run production stack with enhanced security
+docker-compose -f docker-compose.prod.yml up -d
+
+# View logs
+docker-compose logs -f app
+
+# Stop containers
+docker-compose down
+
+# Clean up resources
+docker-compose down -v && docker system prune -f
+```
+
+#### Production Considerations
+- Use strong passwords in `.env` file
+- Configure SSL certificates in nginx.conf for HTTPS
+- Set up backup strategy for PostgreSQL data volume
+- Monitor container resources and implement log rotation
+- Consider using Docker Swarm or Kubernetes for high availability
+
+### External Dependencies
+
+#### Database Services
+- **PostgreSQL 15**: Primary database (containerized)
 - **Drizzle Kit**: Database migration and schema management tools
 
-### UI and Styling
+#### UI and Styling
 - **Radix UI**: Accessible component primitives for complex UI elements
 - **Tailwind CSS**: Utility-first CSS framework for styling
 - **Lucide Icons**: Icon library for consistent iconography
 - **Class Variance Authority**: Utility for managing component variants
 
-### Development Tools
+#### Development Tools
 - **Vite**: Fast build tool and development server
 - **TypeScript**: Type safety and enhanced developer experience
 - **ESBuild**: Fast JavaScript bundler for production builds
-- **Replit Integration**: Development environment plugins and error overlays
+- **Docker & Docker Compose**: Containerization and orchestration
 
-### Data Processing
+#### Data Processing
 - **Date-fns**: Date manipulation and formatting utilities
 - **TanStack Query**: Server state management and caching
 - **React Hook Form**: Form state management and validation

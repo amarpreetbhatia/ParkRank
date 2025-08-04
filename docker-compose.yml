@@ -1,0 +1,59 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: nps-rank-db
+    environment:
+      POSTGRES_DB: nps_rank
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    ports:
+      - "5432:5432"
+    networks:
+      - nps-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d nps_rank"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Australian National Parks Voting App
+  app:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: nps-rank-app
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://postgres:postgres@postgres:5432/nps_rank
+      - PORT=5000
+      - HOST=0.0.0.0
+    ports:
+      - "5000:5000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    networks:
+      - nps-network
+    volumes:
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:5000/api/statistics"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  nps-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
